@@ -22,23 +22,46 @@ function MyNavbar({ setSignInVisible, setSignUpVisible, user, setUser }) {
   const [showLogout, setShowLogout] = useState(false); // State to show/hide logout component
 
   useEffect(() => {
-      const storedUser = localStorage.getItem('name');
-      if (storedUser) {
-          setUser(storedUser);
+    const storedUser = localStorage.getItem('name');
+    if (storedUser) {
+      setUser(storedUser);
+    }
+
+    // Fetch cart items based on login status
+    const fetchCartItems = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const response = await fetch('http://localhost:5000/api/cart', {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+          const data = await response.json();
+          setCartItems(data);
+        } catch (err) {
+          console.error(err);
+        }
+      } else {
+        const localCart = JSON.parse(localStorage.getItem('cart')) || [];
+        setCartItems(localCart);
       }
-  }, [setUser]);
+    };
+
+    fetchCartItems();
+  }, [user, setUser]);
 
   const toggleCart = () => {
-      setIsCartVisible(!isCartVisible);
+    setIsCartVisible(!isCartVisible);
   };
 
   const handleProfileClick = () => {
-      if (user) {
-          setShowLogout(!showLogout);
-      } else {
-          setSignInVisible(true);
-          setSignUpVisible(false);
-      }
+    if (user) {
+      setShowLogout(!showLogout);
+    } else {
+      setSignInVisible(true);
+      setSignUpVisible(false);
+    }
   };
 
   const handleLogout = () => {
@@ -47,6 +70,7 @@ function MyNavbar({ setSignInVisible, setSignUpVisible, user, setUser }) {
     setShowLogout(false);
   };
 
+  const totalQuantity = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
     <div className='header'>
@@ -66,7 +90,7 @@ function MyNavbar({ setSignInVisible, setSignUpVisible, user, setUser }) {
                     ) : (
                         <PersonIcon onClick={handleProfileClick} />
                     )}
-          <ShoppingCartIcon onClick={toggleCart} />
+          <ShoppingCartIcon style={{color: 'white'}}/>
         </div>
       </div>
       <hr />

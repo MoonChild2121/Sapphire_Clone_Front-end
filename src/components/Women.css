@@ -6,7 +6,19 @@
     justify-content: center;
     gap: 7vw;
 }
-
+.cart-icon-container{
+    position: absolute;
+    top: 40px;
+    right: 30px;
+}
+.cart-count{
+    background-color: black;
+    color: white;
+    border-radius: 20px;
+    padding-left: 7px;
+    padding-right: 7px;
+    position: absolute;
+}
 .slider {
     display: flex;
     flex-direction: row;

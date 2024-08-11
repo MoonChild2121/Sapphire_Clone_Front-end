@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import './Women.css'; // Ensure you have a corresponding CSS file for Men
 import pic1 from '../images/men_pics/man_circle1.avif';
 import pic2 from '../images/men_pics/man_circle2.avif';
-
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCartOutlined';
 import Cart from './Cart';
+import ProductPage from './ProductPage'; // Import ProductPage component
 
 function Man() {
     const [suits, setSuits] = useState([]);
@@ -13,6 +13,8 @@ function Man() {
     const [cartItems, setCartItems] = useState([]);
     const [isCartVisible, setCartVisible] = useState(false);
     const [isAddingToCart, setIsAddingToCart] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState(null); // New state for selected product
+    const [isProductPageVisible, setIsProductPageVisible] = useState(false); // State to control ProductPage visibility
     const token = localStorage.getItem('token');
 
     useEffect(() => {
@@ -84,8 +86,36 @@ function Man() {
         setCartVisible(!isCartVisible);
     };
 
+    const totalQuantity = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+
+    const handleProductClick = (suit) => {
+        setSelectedProduct(suit);
+        setIsProductPageVisible(true);
+    };
+
+    if (isProductPageVisible && selectedProduct) {
+        return (
+            <ProductPage
+                product={selectedProduct}
+                addToCart={addToCart}
+                setSelectedProduct={setSelectedProduct}
+                setIsProductPageVisible={setIsProductPageVisible}
+                cartItems={cartItems}
+                toggleCart={toggleCart}
+                totalQuantity={totalQuantity}
+                isCartVisible={isCartVisible}
+                setCartItems={setCartItems}
+                token={token}
+            />
+        );
+    }
+
     return (
         <>
+            <div className="cart-icon-container">
+                <ShoppingCartIcon onClick={toggleCart} style={{ cursor: 'pointer', fontSize: '2rem' }} />
+                {totalQuantity > 0 && <span className="cart-count">{totalQuantity}</span>}
+            </div>
             <div className='circles'>
                 <div className='name'>MAN</div>
                 <div className='slider'>
@@ -106,6 +136,7 @@ function Man() {
                         key={index}
                         onMouseEnter={() => setHoveredIndex(index)}
                         onMouseLeave={() => setHoveredIndex(null)}
+                        onClick={() => handleProductClick(suit)} // Set selected product on click
                     >
                         <img
                             src={hoveredIndex === index ? suit.images[1] : suit.images[0]}

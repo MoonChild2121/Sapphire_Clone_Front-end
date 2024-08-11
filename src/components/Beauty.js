@@ -6,6 +6,7 @@ import pic3 from '../images/beauty/circle3.jpg';
 
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCartOutlined';
 import Cart from './Cart';
+import ProductPage from './ProductPage'; // Import ProductPage component
 
 function Beauty() {
     const [suits, setSuits] = useState([]);
@@ -14,6 +15,7 @@ function Beauty() {
     const [cartItems, setCartItems] = useState([]);
     const [isCartVisible, setCartVisible] = useState(false);
     const [isAddingToCart, setIsAddingToCart] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState(null); // State to manage selected product
     const token = localStorage.getItem('token');
 
     useEffect(() => {
@@ -70,7 +72,6 @@ function Beauty() {
         };
     
         if (token) {
-            // User is logged in, add to the backend cart
             fetch('http://localhost:5000/api/cart', {
                 method: 'POST',
                 headers: {
@@ -89,7 +90,6 @@ function Beauty() {
                 setIsAddingToCart(false);
             });
         } else {
-            // User is not logged in, store cart in localStorage
             const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
             const itemIndex = existingCart.findIndex(item => item.productId === suit._id);
     
@@ -111,8 +111,30 @@ function Beauty() {
         setCartVisible(!isCartVisible);
     };
 
+    const totalQuantity = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+
+    if (selectedProduct) {
+        return (
+            <ProductPage
+                product={selectedProduct}
+                addToCart={addToCart}
+                setSelectedProduct={setSelectedProduct}
+                cartItems={cartItems}
+                toggleCart={toggleCart}
+                totalQuantity={totalQuantity}
+                isCartVisible={isCartVisible}
+                setCartItems={setCartItems}
+                token={token}
+            />
+        );
+    }
+
     return (
         <>
+            <div className="cart-icon-container">
+                <ShoppingCartIcon onClick={toggleCart} style={{ cursor: 'pointer', fontSize: '2rem' }} />
+                {totalQuantity > 0 && <span className="cart-count">{totalQuantity}</span>}
+            </div>
             <div className='circles'>
                 <div className='name'>BEAUTY</div>
                 <div className='slider'>
@@ -137,6 +159,7 @@ function Beauty() {
                         key={index}
                         onMouseEnter={() => setHoveredIndex(index)}
                         onMouseLeave={() => setHoveredIndex(null)}
+                        onClick={() => setSelectedProduct(suit)} // Set selected product on click
                     >
                         <img
                             src={hoveredIndex === index ? suit.images[1] : suit.images[0]}

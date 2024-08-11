@@ -1,157 +1,156 @@
 .header {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .navbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1vw;
-  }
-  
-  .image {
-    flex: 1;
-  }
-  
-  .image img {
-    width: 17vw; /* Adjust as needed */
-  }
-  
-  .search-container {
-    position: relative;
-    flex: 2;
-    display: flex;
-    justify-content: center;
-  }
-  
-  .search-input {
-    width: 100%;
-    height: 6vh;
-    border-radius: 10px;
-    border: solid 1px rgb(204, 202, 202);
-    font-size: 1vw;
-    padding: 1vw;
-    padding-right: 3vw; /* Add padding to the right to make space for the button */
-  }
-  
-  .search-button {
-    position: absolute;
-    right: 1vw;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .search-icon {
-    font-size: 2vw; /* Adjust the icon size as needed */
-    color: rgb(107, 105, 105);
-  }
-  
-  .icons {
-    flex: 1;
-    display: flex;
-    justify-content: flex-end;
-    gap: 1vw;
-    padding: 1vw;
-  }
-  
-  .icons svg {
-    font-size: 30px;
-    cursor: pointer;
-    color: #343a40;
-    transition: transform 0.3s ease;
-  }
-  
-  .icons svg:hover {
-    transform: scale(1.4);
-  }
-  
-  .categories {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: 1.6vw;
-    font-size: 1.2vw;
-    font-weight: 400;
-  }
-  
-  .category {
-    position: static;  /* Change from relative to static */
-  }
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1vw;
+}
+
+.image {
+  flex: 1;
+}
+
+.image img {
+  width: 17vw; /* Adjust as needed */
+}
+
+.search-container {
+  position: relative;
+  flex: 2;
+  display: flex;
+  justify-content: center;
+}
+
+.search-input {
+  width: 100%;
+  height: 6vh;
+  border-radius: 10px;
+  border: solid 1px rgb(204, 202, 202);
+  font-size: 1vw;
+  padding: 1vw;
+  padding-right: 3vw; /* Add padding to the right to make space for the button */
+}
+
+.search-button {
+  position: absolute;
+  right: 1vw;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.search-icon {
+  font-size: 2vw; /* Adjust the icon size as needed */
+  color: rgb(107, 105, 105);
+}
+
+.icons {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1vw;
+  padding: 1vw;
+}
+
+.icons svg {
+  font-size: 30px;
+  cursor: pointer;
+  color: #343a40;
+  transition: transform 0.3s ease;
+}
+
+.icons svg:hover {
+  transform: scale(1.4);
+}
+
+.categories {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 1.6vw;
+  font-size: 1.2vw;
+  font-weight: 400;
+}
+
+.category {
+  position: static;  /* Change from relative to static */
+}
 
 .links {
-  text-decoration: none;
-  color: inherit;
+text-decoration: none;
+color: inherit;
 }
 .categoryname {
-    transition: color 0.3s ease;
-    cursor: pointer;
+  transition: color 0.3s ease;
+  cursor: pointer;
 }
 
 .categoryname:hover {
-    color: grey;
+  color: grey;
 }
-  
 
-  .dropdown {
-    display: none;
-    position: absolute;
-    left: 0;  /* Align to the left edge of the viewport */
-    width: 100%;  /* Make it full width */
-    background-color: white;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-    z-index: 1;
-    padding: 2vw;
-    box-sizing: border-box;  /* Include padding in width calculation */
-  }
-  
-  .columns {
-    display: flex;
-    text-align: left;
-    width: 100%;
-    justify-content: flex-start;  /* Align columns to the start */
-    max-width: 1200px;  /* Or any other max-width you prefer */
-    margin: 0 auto;  /* Center the columns container */
-  }
-  
-  .column {
-    flex: 1;
-    padding: 0 1vw; /* Adjust padding as needed */
-    font-weight: 300;
-    font-size: 1vw;
-  }
-  
-  .column-title {
-    font-weight: 500;
-    white-space: nowrap; /* Prevents line breaks */
-    margin-top: 1.5vh;
-  }
-  
-  .category:hover .dropdown {
+
+.dropdown {
+  display: none;
+  position: absolute;
+  left: 0;  /* Align to the left edge of the viewport */
+  width: 100%;  /* Make it full width */
+  background-color: white;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+  padding: 2vw;
+  box-sizing: border-box;  /* Include padding in width calculation */
+}
+
+.columns {
   display: flex;
-  opacity: 1;
-  visibility: visible;
+  text-align: left;
+  width: 100%;
+  justify-content: flex-start;  /* Align columns to the start */
+  max-width: 1200px;  /* Or any other max-width you prefer */
+  margin: 0 auto;  /* Center the columns container */
+}
+
+.column {
+  flex: 1;
+  padding: 0 1vw; /* Adjust padding as needed */
+  font-weight: 300;
+  font-size: 1vw;
+}
+
+.column-title {
+  font-weight: 500;
+  white-space: nowrap; /* Prevents line breaks */
+  margin-top: 1.5vh;
+}
+
+.category:hover .dropdown {
+display: flex;
+opacity: 1;
+visibility: visible;
 }
 
 
-  
-  .list {
-    white-space: nowrap;
-  }
-  .list div {
-    cursor: pointer;
-    transition: color 0.3s ease;
-  }
-  
-  .list div:hover {
-    color: rgb(171, 170, 170)
-  }
-  .specialoffers {
-    color: rgb(216, 56, 56);
-  }
-  
 
-  
+.list {
+  white-space: nowrap;
+}
+.list div {
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.list div:hover {
+  color: rgb(171, 170, 170)
+}
+.specialoffers {
+  color: rgb(216, 56, 56);
+}
+
+

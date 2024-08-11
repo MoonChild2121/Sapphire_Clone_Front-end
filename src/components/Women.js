@@ -8,6 +8,7 @@ import pic5 from '../images/sliderwoman5.avif';
 
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCartOutlined';
 import Cart from './Cart';
+import ProductPage from './ProductPage'; // Import ProductPage component
 
 function Women() {
     const [suits, setSuits] = useState([]);
@@ -16,6 +17,7 @@ function Women() {
     const [cartItems, setCartItems] = useState([]);
     const [isCartVisible, setCartVisible] = useState(false);
     const [isAddingToCart, setIsAddingToCart] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState(null); // State to manage selected product
     const token = localStorage.getItem('token');
 
     useEffect(() => {
@@ -111,14 +113,35 @@ function Women() {
     
         setCartVisible(true);
     };
-    
 
     const toggleCart = () => {
         setCartVisible(!isCartVisible);
     };
 
+    const totalQuantity = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+
+    if (selectedProduct) {
+        return (
+            <ProductPage
+                product={selectedProduct}
+                addToCart={addToCart}
+                setSelectedProduct={setSelectedProduct}
+                cartItems={cartItems}
+                toggleCart={toggleCart}
+                totalQuantity={totalQuantity}
+                isCartVisible={isCartVisible}
+                setCartItems={setCartItems}
+                token={token}
+            />
+        );
+    }
+
     return (
         <>
+            <div className="cart-icon-container">
+                <ShoppingCartIcon onClick={toggleCart} style={{ cursor: 'pointer', fontSize: '2rem' }} />
+                {totalQuantity > 0 && <span className="cart-count">{totalQuantity}</span>}
+            </div>
             <div className='circles'>
                 <div className='name'>WOMAN</div>
                 <div className='slider'>
@@ -151,6 +174,7 @@ function Women() {
                         key={index}
                         onMouseEnter={() => setHoveredIndex(index)}
                         onMouseLeave={() => setHoveredIndex(null)}
+                        onClick={() => setSelectedProduct(suit)} // Set selected product on click
                     >
                         <img
                             src={hoveredIndex === index ? suit.images[1] : suit.images[0]}
