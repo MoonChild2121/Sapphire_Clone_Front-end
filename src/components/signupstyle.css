@@ -1,0 +1,91 @@
+.sign {
+    position: relative;
+    height: auto; /* Adjust height dynamically */
+    padding: 5vh 10vw; /* Reduce padding for better responsiveness */
+    box-sizing: border-box;
+    max-width: 90vw;
+    margin: 0 auto; /* Center the sign container */
+}
+
+.account {
+    font-size: 2em;
+    margin-bottom: 1em;
+    text-align: center;
+}
+
+.inputbox {
+    font-size: 1.2em; /* Adjusted font size for smaller screens */
+    margin-bottom: 1em; /* Add space between input boxes */
+    display: flex;
+    justify-content: center;
+}
+
+.inputbox input {
+    border: 1px solid grey;
+    border-radius: 10px;
+    padding: 0.5em;
+    width: 100%; /* Make input take full width of the container */
+    max-width: 350px; /* Limit the max width */
+    box-sizing: border-box;
+}
+
+.account-btn {
+    display: flex;
+    justify-content: center;
+    margin-top: 1em;
+}
+
+.account-btn button {
+    padding: 15px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    background-color: black;
+    color: white;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 350px; /* Limit the max width */
+    box-sizing: border-box;
+}
+
+.account-btn button:hover {
+    background: #333232;
+}
+
+@media (max-width: 768px) {
+    .sign {
+        padding: 5vh 5vw; /* Adjust padding on smaller screens */
+    }
+
+    .account {
+        font-size: 1.8em; /* Adjust font size for smaller screens */
+    }
+
+    .inputbox {
+        font-size: 1em; /* Adjust font size for smaller screens */
+    }
+
+    .account-btn button {
+        font-size: 14px; /* Adjust button font size */
+        padding: 12px; /* Adjust button padding */
+    }
+}
+
+@media (max-width: 480px) {
+    .sign {
+        padding: 5vh 2vw; /* Further reduce padding for small screens */
+    }
+
+    .account {
+        font-size: 1.5em; /* Further adjust font size */
+    }
+
+    .inputbox {
+        font-size: 0.9em; /* Adjust input font size */
+    }
+
+    .account-btn button {
+        font-size: 12px; /* Further adjust button font size */
+        padding: 10px; /* Further adjust button padding */
+    }
+}

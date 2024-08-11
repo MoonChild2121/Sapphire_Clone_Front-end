@@ -1,0 +1,121 @@
+.footer {
+    background-color: #f8f9fa;
+    padding: 2vw;
+    font-size: 1vw;
+    color: #343a40;
+    text-align: left;
+  }
+  
+  .footer-columns {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 2vw;
+  }
+  
+  .footer-column {
+    flex: 1;
+    min-width: 200px;
+    margin-right: 2vw;
+  }
+  
+  .footer-column h3 {
+    font-size: 1.2vw;
+    margin-bottom: 1vh;
+  }
+  
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .contact-item {
+    margin-bottom: 1vh;
+    display: flex;
+    align-items: center;
+  }
+  
+  .icon {
+    margin-right: 0.5vw;
+  }
+  
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  ul li {
+    margin-bottom: 1vh;
+  }
+  
+  .newsletter-signup {
+    position: relative;
+    display: flex;
+  }
+  
+  .newsletter-signup input {
+    width: 100%;
+    padding: 0.5vw;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    padding-right: 4vw; /* Space for the button */
+    box-sizing: border-box;
+  }
+  
+  .newsletter-signup button {
+    position: absolute;
+    right: 0.5vw; /* Slightly inside the input box */
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background-color: black;
+    color: white;
+    border-radius: 25px;
+    padding: 0.5vw 1vw; /* Adjust the padding as needed */
+    cursor: pointer;
+    box-sizing: border-box;
+  }
+  
+  .newsletter-signup button:hover {
+    background-color: #82cbea;
+  }
+  
+  .social-icons {
+    display: flex;
+    gap: 1vw;
+    margin-top: 1vh;
+  }
+  
+  .social-icon {
+    font-size: 2vw;
+    color: #343a40;
+  }
+  
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1vw;
+    border-top: 1px solid #ddd;
+    margin-top: 2vw;
+  }
+  
+  .footer-bottom-text {
+    font-size: 1vw;
+  }
+  
+  .payment-image img {
+    height: 2vw; /* Adjust the height as needed */
+  }
+  
+  @media (max-width: 768px) {
+    .footer-columns {
+      flex-direction: column;
+    }
+  
+    .footer-column {
+      margin-right: 0;
+      margin-bottom: 2vw;
+    }
+  }
+  

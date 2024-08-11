@@ -1,0 +1,105 @@
+.circles {
+    margin-top: 7vh; /* Reduced margin-top to bring the whole section closer to the top */
+    display: flex;
+    flex-direction: row; /* Changed from row to column to align title and slider vertically */
+    align-items: center; /* Center align the children */
+    justify-content: center;
+    gap: 7vw;
+}
+
+.slider {
+    display: flex;
+    flex-direction: row;
+    gap: 2vw;
+    margin-top: 1vh; /* Add a bit of margin-top to bring the slider closer to the name */
+}
+
+.slide-circle img {
+    border-radius: 200px;
+    width: 8vw;
+    border: 2px solid rgb(218, 211, 211);
+}
+
+.slide-circle div {
+    margin-top: 1vh;
+    font-size: 0.9vw;
+}
+
+.name {
+    font-size: 2vw;
+    margin-bottom: 1vh; /* Add a bit of margin-bottom to bring the name closer to the slider */
+}
+
+.product-cards {
+    margin-left: 4vw;
+    margin-top: 10vh;
+    display: flex;
+    flex-direction: row;
+    gap: 2vw;
+    flex-wrap: wrap;
+}
+
+.card {
+    width: 20vw;
+    border:none;
+    border-radius: 2px;
+    height: fit-content;
+    text-align: left;
+    color: gray;
+    font-size: 1vw;
+    position: relative; /* Added for positioning the addtocart element */
+    cursor: pointer;
+}
+
+.card .suit-image {
+    transition: transform 0.3s ease, opacity 0.3s ease; /* Smooth transition for image change */
+}
+
+.card:hover .suit-image {
+    transform: scale(1.05); /* Slightly enlarge the image on hover */
+}
+
+.buy {
+    align-items: center;
+    position: relative;
+}
+
+.description {
+    margin-top: 1vh;
+}
+
+.addtocart {
+    color: white;
+    background-color: black;
+    border-radius: 10px;
+    align-content: right;
+    padding: 10px;
+    text-align: center;
+    transform: translateY(100%);
+    transition: transform 0.3s ease, opacity 0.3s ease; /* Smooth transition for addtocart element */
+    opacity: 0; /* Initially hidden */
+    align-items: right;
+    justify-content: right;
+    cursor: pointer;
+}
+
+.card:hover .addtocart {
+    transform: translateY(0); /* Slide up */
+    opacity: 1; /* Fade in */
+}
+
+.endtext {
+    text-align: center;
+    margin-top: 10vh;
+    margin-bottom: 10vh;
+    font-size: 1vw;
+    margin-left: 10vw;
+    margin-right: 10vw;
+    color: rgb(102, 101, 101);
+}
+
+.icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
