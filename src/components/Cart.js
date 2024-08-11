@@ -5,74 +5,92 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 
-function Cart({ cartItems, setCartItems, toggleCart }) {
-    const removeFromCart = (id) => {
-      const newCartItems = cartItems.filter((item) => item.id !== id);
-      setCartItems(newCartItems);
-    };
+function Cart({ cartItems, setCartItems, toggleCart, token }) {
+  console.log("Cart Items in Cart Component:", cartItems); // Debugging line
 
-    const increaseQuantity = (id) => {
-      const newCartItems = [...cartItems];
-      const itemIndex = newCartItems.findIndex((item) => item.id === id);
-      if (itemIndex > -1) {
-        newCartItems[itemIndex].quantity += 1;
-        setCartItems(newCartItems);
+  const updateCartItem = (productId, quantity) => {
+      fetch(`http://localhost:5000/api/cart/${productId}`, {
+          method: 'PUT',
+          headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({ quantity })
+      })
+      .then(res => res.json())
+      .then(data => setCartItems(data))
+      .catch(err => console.error(err));
+  };
+
+  const removeFromCart = (productId) => {
+      fetch(`http://localhost:5000/api/cart/${productId}`, {
+          method: 'DELETE',
+          headers: {
+              Authorization: `Bearer ${token}`
+          }
+      })
+      .then(res => res.json())
+      .then(data => setCartItems(data))
+      .catch(err => console.error(err));
+  };
+
+  const increaseQuantity = (productId) => {
+      const item = cartItems.find(item => item.productId === productId);
+      if (item) {
+          updateCartItem(productId, item.quantity + 1);
       }
-    };
+  };
 
-    const decreaseQuantity = (id) => {
-      const newCartItems = [...cartItems];
-      const itemIndex = newCartItems.findIndex((item) => item.id === id);
-      if (itemIndex > -1) {
-        if (newCartItems[itemIndex].quantity > 1) {
-          newCartItems[itemIndex].quantity -= 1;
-          setCartItems(newCartItems);
-        } else {
-          removeFromCart(id);
-        }
+  const decreaseQuantity = (productId) => {
+      const item = cartItems.find(item => item.productId === productId);
+      if (item && item.quantity > 1) {
+          updateCartItem(productId, item.quantity - 1);
+      } else {
+          removeFromCart(productId);
       }
-    };
+  };
 
-    const totalPrice = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  const totalPrice = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
 
-    return (
+  return (
       <div className="cart">
-        <div className="cart-header">
-          <p>SHOPPING CART</p>
-          <CloseIcon onClick={toggleCart} className="close-icon" />
-        </div>
-        {cartItems.length === 0? (
-          <p>Your cart is empty</p>
-        ) : (
-          <>
-            {cartItems.map((item) => (
-              <div key={item.id} className="cart-item">
-                <img src={item.img} alt={item.desc} />
-                <div className="cart-item-details">
-                  <p>{item.desc}</p>
-                  <p>Rs.{item.price.toFixed(2)}</p>
-                  <div className="quantity-controls">
-                    <button onClick={() => decreaseQuantity(item.id)}><RemoveIcon /></button>
-                    <span>{item.quantity}</span>
-                    <button onClick={() => increaseQuantity(item.id)}><AddIcon /></button>
+          <div className="cart-header">
+              <p>SHOPPING CART</p>
+              <CloseIcon onClick={toggleCart} className="close-icon" />
+          </div>
+          {cartItems.length === 0 ? (
+              <p>Your cart is empty</p>
+          ) : (
+              <>
+                  {cartItems.map((item) => (
+                      <div key={item.productId} className="cart-item">
+                          <img src={item.img} alt="" />
+                          <div className="cart-item-details">
+                          <p>{item.name}</p>
+                          <p>Rs.{item.price ? item.price.toFixed(2) : '0.00'}</p>
+                              <div className="quantity-controls">
+                                  <button onClick={() => decreaseQuantity(item.productId)}><RemoveIcon /></button>
+                                  <span>{item.quantity}</span>
+                                  <button onClick={() => increaseQuantity(item.productId)}><AddIcon /></button>
+                              </div>
+                              <DeleteIcon onClick={() => removeFromCart(item.productId)} className="delete-icon" />
+                          </div>
+                      </div>
+                  ))}
+                  <div className="cart-total">
+                      <div>Subtotal: </div>
+                      <div>Rs.{totalPrice.toFixed(2)}</div>
                   </div>
-                  <DeleteIcon onClick={() => removeFromCart(item.id)} className="delete-icon" />
-                </div>
-              </div>
-            ))}
-            <div className="cart-total">
-              <div>Subtotal: </div>
-              <div>Rs.{totalPrice.toFixed(2)}</div>
-            </div>
-            <div className="cart-buttons">
-              <button>VIEW CART</button>
-              <button>CHECKOUT</button>
-              <button onClick={toggleCart}>CONTINUE SHOPPING</button>
-            </div>
-          </>
-        )}
+                  <div className="cart-buttons">
+                      <button>VIEW CART</button>
+                      <button>CHECKOUT</button>
+                      <button onClick={toggleCart}>CONTINUE SHOPPING</button>
+                  </div>
+              </>
+          )}
       </div>
-    );
-  }
+  );
+}
+
 
 export default Cart;

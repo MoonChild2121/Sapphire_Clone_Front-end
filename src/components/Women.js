@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './Women.css'; // Ensure you have a corresponding CSS file for Women
+import './Women.css';
 import pic1 from '../images/sliderwoman1.avif';
 import pic2 from '../images/sliderwoman2.avif';
 import pic3 from '../images/sliderwoman3.avif';
@@ -15,30 +15,59 @@ function Women() {
     const [hoveredAddToCart, setHoveredAddToCart] = useState(null);
     const [cartItems, setCartItems] = useState([]);
     const [isCartVisible, setCartVisible] = useState(false);
+    const [isAddingToCart, setIsAddingToCart] = useState(false);
+    const token = localStorage.getItem('token');
 
     useEffect(() => {
-        // Replace with your API endpoint for fetching suits data
         fetch('http://localhost:5000/api/products/women')
             .then(res => res.json())
             .then(data => {
-                console.log(data); // Log the fetched data
+                console.log("Products Data:", data); // Debugging line
                 setSuits(data);
             })
             .catch(err => console.error(err));
-    }, []);
+    
+        fetch('http://localhost:5000/api/cart', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log("Cart Data:", data); // Debugging line
+            setCartItems(data);
+        })
+        .catch(err => console.error(err));
+    }, [token]);
+    
 
     const addToCart = (suit) => {
-        const existingItemIndex = cartItems.findIndex(item => item._id === suit._id);
-        if (existingItemIndex > -1) {
-            const newCartItems = [...cartItems];
-            newCartItems[existingItemIndex].quantity += 1;
-            setCartItems(newCartItems);
-        } else {
-            const newCartItem = { ...suit, quantity: 1, img: suit.images[0] };
-            setCartItems([...cartItems, newCartItem]);
-        }
-        setCartVisible(true); // Show the cart when an item is added
+        setIsAddingToCart(true);
+        const newCartItem = { productId: suit._id, quantity: 1, img: suit.images[0] };
+    
+        fetch('http://localhost:5000/api/cart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify(newCartItem)
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log("Updated Cart Data:", data); // Debugging line
+            setCartItems(data);
+            setIsAddingToCart(false);
+        })
+        .catch(err => {
+            console.error(err);
+            setIsAddingToCart(false);
+        });
+    
+        setCartVisible(true);
     };
+    
+    
 
     const toggleCart = () => {
         setCartVisible(!isCartVisible);
@@ -94,9 +123,9 @@ function Women() {
                                 className={`addtocart ${hoveredAddToCart === index ? 'icon' : ''}`}
                                 onMouseEnter={() => setHoveredAddToCart(index)}
                                 onMouseLeave={() => setHoveredAddToCart(null)}
-                                onClick={() => addToCart(suit)}
+                                onClick={() => !isAddingToCart && addToCart(suit)}
                             >
-                                {hoveredAddToCart === index ? <ShoppingCartIcon /> : 'ADD TO BAG'}
+                                {isAddingToCart && hoveredAddToCart === index ? 'ADDING...' : hoveredAddToCart === index ? <ShoppingCartIcon /> : 'ADD TO BAG'}
                             </div>
                         </div>
                     </div>
@@ -106,7 +135,7 @@ function Women() {
                 With a dazzling assortment of women’s apparel, you’re sure to find stylish ready to wear pieces for casual looks, elegant unstitched ensembles, chic western wear and everything in between. Stay on trend this season with our latest collections and discover new favourites every week!
             </div>
             {isCartVisible && (
-                <Cart cartItems={cartItems} setCartItems={setCartItems} toggleCart={toggleCart} />
+                <Cart cartItems={cartItems} setCartItems={setCartItems} toggleCart={toggleCart} token={token} />
             )}
         </>
     );

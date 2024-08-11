@@ -12,29 +12,52 @@ function Man() {
     const [hoveredAddToCart, setHoveredAddToCart] = useState(null);
     const [cartItems, setCartItems] = useState([]);
     const [isCartVisible, setCartVisible] = useState(false);
+    const [isAddingToCart, setIsAddingToCart] = useState(false);
+    const token = localStorage.getItem('token');
 
     useEffect(() => {
-        // Replace with your API endpoint for fetching suits data
         fetch('http://localhost:5000/api/products/men')
             .then(res => res.json())
             .then(data => {
-                console.log(data); // Log the fetched data
                 setSuits(data);
             })
             .catch(err => console.error(err));
-    }, []);
+
+        fetch('http://localhost:5000/api/cart', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            setCartItems(data);
+        })
+        .catch(err => console.error(err));
+    }, [token]);
 
     const addToCart = (suit) => {
-        const existingItemIndex = cartItems.findIndex(item => item._id === suit._id);
-        if (existingItemIndex > -1) {
-            const newCartItems = [...cartItems];
-            newCartItems[existingItemIndex].quantity += 1;
-            setCartItems(newCartItems);
-        } else {
-            const newCartItem = { ...suit, quantity: 1, img: suit.images[0] };
-            setCartItems([...cartItems, newCartItem]);
-        }
-        setCartVisible(true); // Show the cart when an item is added
+        setIsAddingToCart(true);
+        const newCartItem = { productId: suit._id, quantity: 1, img: suit.images[0] };
+
+        fetch('http://localhost:5000/api/cart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify(newCartItem)
+        })
+        .then(res => res.json())
+        .then(data => {
+            setCartItems(data);
+            setIsAddingToCart(false);
+        })
+        .catch(err => {
+            console.error(err);
+            setIsAddingToCart(false);
+        });
+
+        setCartVisible(true);
     };
 
     const toggleCart = () => {
@@ -79,9 +102,9 @@ function Man() {
                                 className={`addtocart ${hoveredAddToCart === index ? 'icon' : ''}`}
                                 onMouseEnter={() => setHoveredAddToCart(index)}
                                 onMouseLeave={() => setHoveredAddToCart(null)}
-                                onClick={() => addToCart(suit)}
+                                onClick={() => !isAddingToCart && addToCart(suit)}
                             >
-                                {hoveredAddToCart === index ? <ShoppingCartIcon /> : 'ADD TO BAG'}
+                                {isAddingToCart && hoveredAddToCart === index ? 'ADDING...' : hoveredAddToCart === index ? <ShoppingCartIcon /> : 'ADD TO BAG'}
                             </div>
                         </div>
                     </div>
@@ -91,7 +114,7 @@ function Man() {
                 SAPPHIRE Man is a perfect blend of modern elegance and timeless style, designed to make a dapper statement this season. With a commitment to quality reflected in every detail, our Men's Stitched & Unstitched collections offer versatility that transcends trends, allowing you to curate a wardrobe suitable for every occasion. Whether you're looking for something formal or casual, SAPPHIRE Man has got you covered.
             </div>
             {isCartVisible && (
-                <Cart cartItems={cartItems} setCartItems={setCartItems} toggleCart={toggleCart} />
+                <Cart cartItems={cartItems} setCartItems={setCartItems} toggleCart={toggleCart} token={token} />
             )}
         </>
     );

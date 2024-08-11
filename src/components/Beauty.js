@@ -13,28 +13,52 @@ function Beauty() {
     const [hoveredAddToCart, setHoveredAddToCart] = useState(null);
     const [cartItems, setCartItems] = useState([]);
     const [isCartVisible, setCartVisible] = useState(false);
+    const [isAddingToCart, setIsAddingToCart] = useState(false);
+    const token = localStorage.getItem('token');
 
     useEffect(() => {
         fetch('http://localhost:5000/api/products/beauty')
             .then(res => res.json())
             .then(data => {
-                console.log(data); // Log the fetched data
                 setSuits(data);
             })
             .catch(err => console.error(err));
-    }, []);
+
+        fetch('http://localhost:5000/api/cart', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            setCartItems(data);
+        })
+        .catch(err => console.error(err));
+    }, [token]);
 
     const addToCart = (suit) => {
-        const existingItemIndex = cartItems.findIndex(item => item._id === suit._id);
-        if (existingItemIndex > -1) {
-            const newCartItems = [...cartItems];
-            newCartItems[existingItemIndex].quantity += 1;
-            setCartItems(newCartItems);
-        } else {
-            const newCartItem = { ...suit, quantity: 1, img: suit.images[0] };
-            setCartItems([...cartItems, newCartItem]);
-        }
-        setCartVisible(true); // Show the cart when an item is added
+        setIsAddingToCart(true);
+        const newCartItem = { productId: suit._id, quantity: 1, img: suit.images[0] };
+
+        fetch('http://localhost:5000/api/cart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify(newCartItem)
+        })
+        .then(res => res.json())
+        .then(data => {
+            setCartItems(data);
+            setIsAddingToCart(false);
+        })
+        .catch(err => {
+            console.error(err);
+            setIsAddingToCart(false);
+        });
+
+        setCartVisible(true);
     };
 
     const toggleCart = () => {
@@ -83,19 +107,19 @@ function Beauty() {
                                 className={`addtocart ${hoveredAddToCart === index ? 'icon' : ''}`}
                                 onMouseEnter={() => setHoveredAddToCart(index)}
                                 onMouseLeave={() => setHoveredAddToCart(null)}
-                                onClick={() => addToCart(suit)}
+                                onClick={() => !isAddingToCart && addToCart(suit)}
                             >
-                                {hoveredAddToCart === index ? <ShoppingCartIcon /> : 'ADD TO BAG'}
+                                {isAddingToCart && hoveredAddToCart === index ? 'ADDING...' : hoveredAddToCart === index ? <ShoppingCartIcon /> : 'ADD TO BAG'}
                             </div>
                         </div>
                     </div>
                 ))}
             </div>
             <div className='endtext'>
-                Our latest Beauty collection has been meticulously curated to offer a wide range of versatile silhouettes. Our collection features a variety of Eastern kurtas and Western dresses, all carefully crafted from the finest quality fabrics. Each piece in our collection is trendy, unique, and exquisite. The collection boasts a range of dainty prints and vibrant hues, which are sure to make your little star stand out in the crowd. Our outfits are perfect for a variety of occasions, from casual outings to formal events. With a focus on both style and comfort, we have ensured that each piece in our collection is not only fashionable but also comfortable to wear. The fabrics used in our collection are of the highest quality, ensuring that the clothes are durable and long-lasting. Our collection is a perfect blend of traditional and contemporary designs, which are sure to appeal to a wide range of tastes and preferences.
+                {/* Your descriptive text */}
             </div>
             {isCartVisible && (
-                <Cart cartItems={cartItems} setCartItems={setCartItems} toggleCart={toggleCart} />
+                <Cart cartItems={cartItems} setCartItems={setCartItems} toggleCart={toggleCart} token={token} />
             )}
         </>
     );

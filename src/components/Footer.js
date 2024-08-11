@@ -8,7 +8,6 @@ import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import CallOutlinedIcon from '@mui/icons-material/CallOutlined';
 import PaymentImage from '../images/paypal.avif'; 
-
 function Footer() {
   return (
     <footer className="footer">
