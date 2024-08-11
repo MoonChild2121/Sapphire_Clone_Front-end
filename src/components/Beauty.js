@@ -24,40 +24,86 @@ function Beauty() {
             })
             .catch(err => console.error(err));
 
-        fetch('http://localhost:5000/api/cart', {
-            headers: {
-                Authorization: `Bearer ${token}`
+        if (token) {
+            const localCart = JSON.parse(localStorage.getItem('cart')) || [];
+
+            if (localCart.length > 0) {
+                localCart.forEach(item => {
+                    fetch('http://localhost:5000/api/cart', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${token}`
+                        },
+                        body: JSON.stringify(item)
+                    })
+                    .catch(err => console.error(err));
+                });
+
+                localStorage.removeItem('cart');
             }
-        })
-        .then(res => res.json())
-        .then(data => {
-            setCartItems(data);
-        })
-        .catch(err => console.error(err));
+
+            fetch('http://localhost:5000/api/cart', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                setCartItems(data);
+            })
+            .catch(err => console.error(err));
+        } else {
+            const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
+            setCartItems(existingCart);
+        }
     }, [token]);
 
     const addToCart = (suit) => {
         setIsAddingToCart(true);
-        const newCartItem = { productId: suit._id, quantity: 1, img: suit.images[0] };
-
-        fetch('http://localhost:5000/api/cart', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`
-            },
-            body: JSON.stringify(newCartItem)
-        })
-        .then(res => res.json())
-        .then(data => {
-            setCartItems(data);
+        const newCartItem = {
+            productId: suit._id,
+            name: suit.name,
+            price: suit.price,
+            quantity: 1,
+            img: suit.images[0]
+        };
+    
+        if (token) {
+            // User is logged in, add to the backend cart
+            fetch('http://localhost:5000/api/cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify(newCartItem)
+            })
+            .then(res => res.json())
+            .then(data => {
+                setCartItems(data);
+                setIsAddingToCart(false);
+            })
+            .catch(err => {
+                console.error(err);
+                setIsAddingToCart(false);
+            });
+        } else {
+            // User is not logged in, store cart in localStorage
+            const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
+            const itemIndex = existingCart.findIndex(item => item.productId === suit._id);
+    
+            if (itemIndex > -1) {
+                existingCart[itemIndex].quantity += 1;
+            } else {
+                existingCart.push(newCartItem);
+            }
+    
+            localStorage.setItem('cart', JSON.stringify(existingCart));
+            setCartItems(existingCart);
             setIsAddingToCart(false);
-        })
-        .catch(err => {
-            console.error(err);
-            setIsAddingToCart(false);
-        });
-
+        }
+    
         setCartVisible(true);
     };
 

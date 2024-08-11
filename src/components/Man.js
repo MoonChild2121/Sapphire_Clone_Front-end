@@ -23,39 +23,59 @@ function Man() {
             })
             .catch(err => console.error(err));
 
-        fetch('http://localhost:5000/api/cart', {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
-        .then(res => res.json())
-        .then(data => {
-            setCartItems(data);
-        })
-        .catch(err => console.error(err));
+        if (token) {
+            fetch('http://localhost:5000/api/cart', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                setCartItems(data);
+            })
+            .catch(err => console.error(err));
+        } else {
+            const localCart = JSON.parse(localStorage.getItem('cart')) || [];
+            setCartItems(localCart);
+        }
     }, [token]);
 
     const addToCart = (suit) => {
         setIsAddingToCart(true);
-        const newCartItem = { productId: suit._id, quantity: 1, img: suit.images[0] };
+        const newCartItem = { productId: suit._id, quantity: 1, img: suit.images[0], name: suit.name, price: suit.price };
 
-        fetch('http://localhost:5000/api/cart', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`
-            },
-            body: JSON.stringify(newCartItem)
-        })
-        .then(res => res.json())
-        .then(data => {
-            setCartItems(data);
+        if (token) {
+            fetch('http://localhost:5000/api/cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify(newCartItem)
+            })
+            .then(res => res.json())
+            .then(data => {
+                setCartItems(data);
+                setIsAddingToCart(false);
+            })
+            .catch(err => {
+                console.error(err);
+                setIsAddingToCart(false);
+            });
+        } else {
+            const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
+            const itemIndex = existingCart.findIndex(item => item.productId === suit._id);
+
+            if (itemIndex > -1) {
+                existingCart[itemIndex].quantity += 1;
+            } else {
+                existingCart.push(newCartItem);
+            }
+
+            localStorage.setItem('cart', JSON.stringify(existingCart));
+            setCartItems(existingCart);
             setIsAddingToCart(false);
-        })
-        .catch(err => {
-            console.error(err);
-            setIsAddingToCart(false);
-        });
+        }
 
         setCartVisible(true);
     };
